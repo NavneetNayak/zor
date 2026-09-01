@@ -22,6 +22,7 @@
             packages = [
               zig
               zls
+              direnv
             ];
           };
         } 

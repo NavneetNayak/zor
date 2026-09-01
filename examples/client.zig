@@ -18,7 +18,7 @@ pub fn main(init: std.process.Init) !void {
     const scalar = 10;
 
     var future = io.async(client.call, .{
-        api.multiplyi32s,
+        api.MathService.multiplyi32s,
         io,
         gpa,
         vector,
