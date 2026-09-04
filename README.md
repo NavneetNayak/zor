@@ -1,11 +1,9 @@
 # zor
 
-> RPC framework for zig.
+> RPC (Remote Procedure Call) framework for zig.
 
 ## Overview
-`zor` is a RPC framework for zig. 
-
-Goal with this project is to:
+`zor` is a RPC framework for zig. Goal with this project is to:
 - Provide an ergonomic interface.
 - Compile time checking for parameter types.
 - Minimizing runtime rpc handling overhead.

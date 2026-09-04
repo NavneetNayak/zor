@@ -76,6 +76,7 @@ pub fn Server(comptime ApiSpec: type, comptime ApiImpl: type) type {
             }
         }
 
+        // TODO: arena per connection rather than server
         pub fn serve(_: *const Self, arena: std.mem.Allocator, io: std.Io, host: []const u8, port: u16) !void {
             const addr = try net.IpAddress.parseIp4(host, port);
 
