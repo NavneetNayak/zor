@@ -2,10 +2,19 @@
 
 > RPC framework for zig.
 
-## Overview & Usage
-zor is a RPC framework for zig, it provides a ergonomic interface and operates at low latency. 
+## Overview
+`zor` is a RPC framework for zig. 
 
-To use zor, first define an `api.zig` that both the client and server will use. 
+Goal with this project is to:
+- Provide an ergonomic interface.
+- Compile time checking for parameter types.
+- Minimizing runtime rpc handling overhead.
+
+Most of this is acheived using zig's `comptime`.
+
+## Usage
+
+To use `zor`, first define an `api.zig` that both the client and server will use. 
 ```zig
 pub const UserService = struct {
     pub const User = struct {
@@ -50,11 +59,10 @@ const UserServiceImpl = struct {
 
 // ... snipped 
     
-    const server = zor.initServer(api, .{
+    const server = comptime zor.initServer(api, .{
         .UserService = UserServiceImpl,
     })
-
-    server.serve(io, gpa);
+    server.serve(io, arena, "0.0.0.0", 8080);
 
 // ... snipped 
 ```
@@ -66,16 +74,26 @@ const api = @import("api");
 // ... snipped
 
     const client = zor.initClient(api)
+    try client.connect(io, "0.0.0.0", 8000);
 
     const user = api.UserService.User {
         .username = getUsername(),
         .encryptedPassword = getEncryptedPassword(),
     };
 
-    client.call(api.UserService.Login, .{ io, gpa, user}) catch |err| {
-        // error handling
-    }
+    const login_successful = client.call(api.UserService.Login, .{ io, gpa, user}) catch |err| {
+        // zor error handling (rpc framework errors)
+    };
+    try login_successful catch |err| {
+        // rpc error handling (LoginError in this case)
+    };
+
 
 // ... snipped
 ```
 
+## Work in Progress
+- Handling pointer, slice & nested struct types.
+- Connection multiplexing.
+- Better Api Spec handling.
+- Better compile time errors & error handling.
